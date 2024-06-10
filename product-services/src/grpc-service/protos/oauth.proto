@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package hello;
+
+
+service HelloService {
+  rpc SayHello (HelloRequest) returns (HelloResponse);
+  rpc GetToken (LoginRequest) returns (DataBaseResponse);
+  rpc CheckToken (SendRequest) returns (Empty);
+}
+
+message LoginRequest {
+  string token = 1;
+}
+
+message Empty {}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string message = 1;
+}
+
+message DataBaseResponse {
+  int32 status = 1;
+  Empty data = 2;
+  string message = 3;
+}
+
+message SendRequest {
+  string token = 1;
+}
+
+message StatusResponse {
+  int32 status = 1;
+}

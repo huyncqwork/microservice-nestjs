@@ -1,44 +1,57 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Observable, firstValueFrom, lastValueFrom } from 'rxjs';
 import { Request } from 'express';
-import { IS_PUBLIC_KEY } from './auth.public';
+import { GrpcService } from 'src/grpc-service/grpc-service.service';
+import { Client, Transport, ClientGrpc } from '@nestjs/microservices';
+import { join } from 'path';
+import { HelloServiceClient, LoginRequest, SendRequest } from './oauth';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService , private reflector: Reflector) {}
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-      
-         const isPublic = this.reflector.getAllAndOverride<boolean>(
-           IS_PUBLIC_KEY,
-           [context.getHandler(), context.getClass()],
-         );
-         if (isPublic) {
-           // 💡 See this condition
-           return true;
-         }
 
+  @Client({
+    transport: Transport.GRPC,
+    options: {
+      package: 'hello',
+      protoPath: join(__dirname, './oauth.proto'),
+    },
+  })
+
+  // constructor(@Inject('HELLO_PACKAGE') private client: ClientGrpc) {}
+  private readonly client: ClientGrpc;
+  private productService:  HelloServiceClient;
+
+  onModuleInit() {  
+    this.productService = this.client.getService('HelloService');
+  }
+
+  async getToken(request: LoginRequest){
+    const a = await firstValueFrom(this.productService.getToken({token: request.token}))
+    console.log("🚀 ~ GrpcService ~ getToken ~ a:", a)
+  }
+
+  async checkToken(request: SendRequest): Promise<any> {
+    const a = await lastValueFrom(this.productService.checkToken({token: request.token}))
+    return a;
+  }
+
+
+  // constructor(private grpcService: GrpcService) {}
+  async canActivate(
+    context: ExecutionContext,
+  ): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-      const token = this.extractTokenFromHeader(request);      
-    if (!token) {
-      throw new UnauthorizedException();
+    const token = this.extractTokenFromHeader(request);
+
+    if (token === undefined) {
+      throw new HttpException("Token undefined", HttpStatus.UNAUTHORIZED);
     }
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRET,
-      });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+    const user = await this.checkToken({token: token})
+    if(!user) {
+      return false;
     }
+    request['user'] = user
     return true;
   }
 

@@ -7,9 +7,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
-import { Auth1Module } from './auth1/auth1.module';
-
 @Module({
   imports: [
     ClientsModule.register([
@@ -17,11 +17,11 @@ import { Auth1Module } from './auth1/auth1.module';
         name: 'HELLO_PACKAGE',
         transport: Transport.GRPC,
         options: {
-          url: 'localhost:5000',
+          url: 'localhost:3001',
           package: 'hello',
-          protoPath: join(__dirname, './grpc-service/oauth.proto') ,
+          protoPath: join(__dirname, './grpc-service/protos/oauth.proto') ,
         },
-      },
+      },  
     ]),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -32,9 +32,16 @@ import { Auth1Module } from './auth1/auth1.module';
       signOptions: { expiresIn: '60d' },
     }),
     ProductModule, 
-    DatabaseModule, AuthModule, Auth1Module
+    DatabaseModule,
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
