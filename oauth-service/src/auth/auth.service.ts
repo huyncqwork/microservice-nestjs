@@ -4,14 +4,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto } from './dto/sign-up.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm/repository/Repository';
-import { BaseResponse } from 'src/response/baseRespose';
-import { HttpExceptionFilter } from 'src/util/ExceptionFilter';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +27,7 @@ export class AuthService {
     if (user?.password !== pass) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.id, user_name: user.user_name };
+    const payload = { id: user.id, user_name: user.user_name };
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }

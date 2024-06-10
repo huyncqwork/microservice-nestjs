@@ -10,6 +10,7 @@ import { DatabaseModule } from './database/database.module';
 import { HelloModule } from './hello/hello.module';
 import { TokenModule } from './token/token.module';
 import { UsersModule } from './users/users.module';
+import { GrpcServerModule } from './grpc-server/grpc-server.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
     HelloModule,
     TokenModule,
     TokenModule,
+    GrpcServerModule,
   ],
   controllers: [AppController],
   providers: [

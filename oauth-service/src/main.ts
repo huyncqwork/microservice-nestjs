@@ -5,26 +5,31 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import * as cors from 'cors';
 import * as dotenv from 'dotenv';
-import { join } from 'path';
 import { AppModule } from './app.module';
+import { GrpcServerOptions } from './grpc-server/grpc-server.option';
 import { HttpExceptionFilter } from './util/ExceptionFilter';
 import { ExceptionResponseDetail } from './util/exception-filter';
+
 
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice(AppModule, {
-    transport: Transport.GRPC,
-    // name: 'HELLO_PACKAGE',
-    options: {
-      url: 'localhost:5000',
-      package: 'hello',
-      protoPath: join(__dirname, './token/hello.proto'),
-    },
-  });
+  // const app = await NestFactory.createMicroservice(AppModule, );
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.use(cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  }));
+  
+    app.connectMicroservice<MicroserviceOptions>(GrpcServerOptions)
+  await app.startAllMicroservices()
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -40,6 +45,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen();
+await app.listen(3000);
 }
 bootstrap();

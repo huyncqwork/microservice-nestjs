@@ -23,19 +23,19 @@ export class UsersController {
   @Post('create')
   async createUser(@Body() createUser: CreateUserDto) {
     const response = await this.usersService.createUser(createUser)
-    return new BaseResponse(response, "Successlly!!!", HttpStatus.CREATED);
+    return new BaseResponse(response, "Successfully!!!", HttpStatus.CREATED);
   }
   
   @Put('update/:id')
   async updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateUser: UpdateUserDto) {  
     const response = await this.usersService.updateUser(id, updateUser)
-    return new BaseResponse(response, "Successlly!!!", HttpStatus.OK);
+    return new BaseResponse(response, "Successfully!!!", HttpStatus.OK);
   }
 
   @Get(':id')
   async detail(@Param('id', ParseIntPipe) id: number) {
     const response = await this.usersService.findById(id)
-    return new BaseResponse(response, "Successlly!!!", HttpStatus.OK);
+    return new BaseResponse(response, "Successfully!!!", HttpStatus.OK);
   }
 
 }
