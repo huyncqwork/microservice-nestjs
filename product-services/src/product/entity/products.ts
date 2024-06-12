@@ -11,8 +11,6 @@ export class Products {
     @Column()
     price: number;
     @Column()
-    quantity: number;
-    @Column()
     description: string;
     @Column()
     status: boolean;

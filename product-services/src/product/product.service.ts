@@ -4,9 +4,26 @@ import { Repository } from 'typeorm';
 import { Products } from './entity/products';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductResponse } from 'src/grpc/grpc-server/protos/interfaces/src/grpc/grpc-server/protos/product';
 
 @Injectable()
 export class ProductService {
+  async findByIdGrpc(id: number) {
+      const product = await this.productRepository.findOne({where: {id}})
+
+      if (!product) {
+        throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
+      }
+
+      return {
+        id: product.id,
+        images: product.images,
+        name_product: product.name_product,
+        price: product.price,
+        description: product.description,
+        status: product.status
+      }
+  }
 
 
   async deleteProduct(id: number) {
@@ -17,7 +34,7 @@ export class ProductService {
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto) {
     await this.findById(id);
-    const { images, name_product, price, quantity, description } =
+    const { images, name_product, price, description } =
       updateProductDto;
     const isNameProductExists = await this.productRepository.exists({
       where: {
@@ -40,7 +57,6 @@ export class ProductService {
         images,
         name_product,
         price,
-        quantity,
         description,
       },
     );
@@ -57,7 +73,7 @@ export class ProductService {
     return product;
   }
   async createProduct(createProductDto: CreateProductDto) {
-    const { images, name_product, price, quantity, description } =
+    const { images, name_product, price, description } =
       createProductDto;
     const isNameProductExists = await this.productRepository.exists({
       where: {
@@ -76,7 +92,6 @@ export class ProductService {
       images,
       name_product,
       price,
-      quantity,
       description,
     });
 

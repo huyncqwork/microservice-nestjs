@@ -10,6 +10,8 @@ import { join } from 'path';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
+import { GrpcServerController } from './grpc/grpc-server/grpc-server.controller';
+import { GrpcServerModule } from './grpc/grpc-server/grpc-server.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -33,9 +35,10 @@ import { AuthModule } from './auth/auth.module';
     }),
     ProductModule, 
     DatabaseModule,
-    AuthModule
+    AuthModule,
+    GrpcServerModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, GrpcServerController],
   providers: [
     AppService,
     {

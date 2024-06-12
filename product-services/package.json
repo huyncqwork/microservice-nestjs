@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./src/grpc-service/protos/interfaces --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=nestJs=true ./src/grpc-service/protos/*.proto",
+    "generate": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./src/grpc/grpc-service/protos/interfaces --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=nestJs=true ./src/grpc/grpc-service/protos/*.proto",
+    "generate-server": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto.cmd --ts_proto_out=./src/grpc/grpc-server/protos/interfaces --ts_proto_opt=addGrpcMetadata=true --ts_proto_opt=nestJs=true ./src/grpc/grpc-server/protos/*.proto",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

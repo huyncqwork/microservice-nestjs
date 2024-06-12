@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package product;
+
+service GrpcProductService {
+    rpc GetProduct (ProductRequest) returns (ProductResponse);
+}
+
+message ProductRequest {
+    int32 id = 1;
+}
+
+message ProductResponse {
+    int32 id = 1;
+    string images = 2;
+    string name_product = 3;
+    int32 price = 4;
+    string description = 5;
+    bool status = 6;
+}
