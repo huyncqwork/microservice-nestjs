@@ -4,6 +4,7 @@ package product;
 
 service GrpcProductService {
     rpc GetProduct (ProductRequest) returns (ProductResponse);
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
 }
 
 message ProductRequest {
@@ -17,4 +18,12 @@ message ProductResponse {
     int32 price = 4;
     string description = 5;
     bool status = 6;
+}
+
+message CreateProductRequest {
+    int32 id = 1;
+}
+
+message CreateProductResponse {
+    int32 id = 1;
 }

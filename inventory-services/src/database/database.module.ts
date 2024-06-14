@@ -3,6 +3,8 @@ import { DatabaseService } from './database.service';
 import { DatabaseController } from './database.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Inventory } from 'src/inventory/entities/inventory.entity';
+import { InventoryWaitConfirm } from 'src/inventory-wait-confirm/entities/inventory-wait-confirm.entity';
+import { InventoryExport } from 'src/inventory-export/entities/inventory-export.entity';
 
 @Module({
   controllers: [DatabaseController],
@@ -15,7 +17,8 @@ import { Inventory } from 'src/inventory/entities/inventory.entity';
       username: 'root',
       password: '123456',
       database: 'A_inventory_service',
-      entities: [Inventory],
+      entities: [Inventory, InventoryWaitConfirm, InventoryExport],
+      autoLoadEntities: true,
     }),
   ],
 })

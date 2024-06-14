@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { DatabaseController } from './database.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Products } from 'src/product/entity/products';
+import { Products } from 'src/product/entity/products.entity';
 
 @Module({
   controllers: [DatabaseController],

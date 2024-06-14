@@ -3,11 +3,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './util/exceptionFilter';
 import { ExceptionResponseDetail } from './util/httpExceptionFilter';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { GrpcServerOptions } from './grpc/grpc-server/grpc-server.option';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.connectMicroservice<MicroserviceOptions>(GrpcServerOptions)
+  await app.startAllMicroservices()
 
   app.useGlobalPipes(
     new ValidationPipe({

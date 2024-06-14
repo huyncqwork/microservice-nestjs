@@ -12,6 +12,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { GrpcServerController } from './grpc/grpc-server/grpc-server.controller';
 import { GrpcServerModule } from './grpc/grpc-server/grpc-server.module';
+import { GrpcClientModule } from './grpc/grpc-client/grpc-client.module';
 @Module({
   imports: [
     ClientsModule.register([
@@ -36,7 +37,8 @@ import { GrpcServerModule } from './grpc/grpc-server/grpc-server.module';
     ProductModule, 
     DatabaseModule,
     AuthModule,
-    GrpcServerModule
+    GrpcServerModule,
+    GrpcClientModule
   ],
   controllers: [AppController, GrpcServerController],
   providers: [

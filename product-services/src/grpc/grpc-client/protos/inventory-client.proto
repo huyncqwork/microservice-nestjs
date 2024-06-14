@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package inventory_client;
+
+service GrpcInventoryClientService {
+    rpc CreateInventory (CreateInventoryRequest) returns (EmptyDataResponse);
+}
+
+message Empty {}
+
+message CreateInventoryRequest {
+    int32 id = 1;
+}
+
+message EmptyDataResponse {
+    Empty data = 1;
+    string message = 2;
+    optional int32 status = 3;
+    
+}

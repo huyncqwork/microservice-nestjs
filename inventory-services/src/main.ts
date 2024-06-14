@@ -3,10 +3,17 @@ import { AppModule } from './app.module';
 import { HttpException, HttpStatus, ValidationError, ValidationPipe } from '@nestjs/common';
 import { ExceptionResponseDetail } from './util/exception-filter';
 import { HttpExceptionFilter } from './util/ExceptionFilter';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { GrpcServerOptions } from './grpc/grpc-server/grpc-server.option';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  
+  app.connectMicroservice<MicroserviceOptions>(GrpcServerOptions)
+  await app.startAllMicroservices()
+  
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (validationErrors: ValidationError[] = []): void => {
@@ -20,6 +27,6 @@ async function bootstrap() {
       },
     }),
   );
-  await app.listen(3000);
+  await app.listen(3002);
 }
 bootstrap();
